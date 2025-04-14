@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>U.L.A.M Gym - Add Members</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, #1e1e2f 0%, #2c2c44 100%);
+      color: #fff;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 10;
+      transition: all 0.3s;
+      box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-brand {
+      padding: 20px 25px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #dc3232, #ff5722);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: 15px;
+    }
+
+    .brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 0 15px;
+      overflow-y: auto;
+    }
+
+    .menu-header {
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.5);
+      margin: 20px 10px 10px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .sidebar ul li {
+      margin: 5px 0;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 15px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .sidebar ul li a:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .sidebar ul li.active a {
+      background-color: rgba(220, 50, 50, 0.2);
+      color: #ff5722;
+      font-weight: bold;
+    }
+
+    .sidebar ul li.logout a {
+      color: #f44336;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .sidebar-footer {
+      padding: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      margin-left: 250px;
+      padding: 30px;
+      transition: all 0.3s;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1e1e2f;
+      margin-bottom: 5px;
+    }
+
+    .header-title p {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .header-actions button {
+      padding: 8px 12px;
+      border: none;
+      background-color: #1e1e2f;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s;
+    }
+
+    .header-actions button:hover {
+      background-color: #ff5722;
+    }
+
+    .btn-icon {
+      font-size: 16px;
+    }
+
+    /* Form container */
+    .form-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 992px) {
+      .form-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      height: 100%;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e1e2f;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e1e2f;
+      margin: 15px 0;
+    }
+
+    /* Form styling */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus,
+    .input-group textarea:focus {
+      border-color: #ff5722;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+    }
+
+    .input-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-cancel {
+      background-color: #f5f5f5;
+      color: #444;
+    }
+
+    .btn-cancel:hover {
+      background-color: #e5e5e5;
+    }
+
+    .btn-submit {
+      background-color: #1e1e2f;
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background-color: #ff5722;
+    }
+
+    /* Photo upload section */
+    .photo-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .photo-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .photo-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-placeholder .photo-icon {
+      font-size: 50px;
+      color: #aaa;
+    }
+
+    .upload-btn {
+      padding: 8px 15px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .upload-btn:hover {
+      background-color: #e5e5e5;
+    }
+
+    /* Membership options */
+    .membership-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .membership-option {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: #fff;
+    }
+
+    .membership-option:hover {
+      border-color: #ff5722;
+      box-shadow: 0 0 0 1px rgba(255, 87, 34, 0.2);
+    }
+
+    .membership-option.selected {
+      border-color: #ff5722;
+      background-color: rgba(255, 87, 34, 0.05);
+      box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+    }
+
+    .membership-option h4 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #1e1e2f;
+    }
+
+    .membership-option .price {
+      font-weight: bold;
+      font-size: 20px;
+      margin: 10px 0;
+      color: #ff5722;
+    }
+
+    .membership-option .duration {
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* Member preview card */
+    .member-preview {
+      background: #1e1e2f;
+      color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .preview-header {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .preview-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #e0e0e0;
+      margin: 0 auto 15px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-photo .photo-icon {
+      font-size: 40px;
+      color: #aaa;
+    }
+
+    .preview-name {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .preview-membership {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .preview-body {
+      background-color: white;
+      color: #333;
+      padding: 20px;
+    }
+
+    .preview-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .preview-detail:last-child {
+      border-bottom: none;
+    }
+
+    .preview-label {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .preview-value {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Quick tips card */
+    .quick-tips {
+      padding: 15px;
+      background-color: rgba(255, 87, 34, 0.05);
+      border-left: 4px solid #ff5722;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    .quick-tips h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #ff5722;
+    }
+
+    .quick-tips ul {
+      list-style: disc inside;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .quick-tips ul li {
+      margin-bottom: 8px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        padding: 15px 0;
+      }
+      
+      .brand-text, .menu-text, .sidebar-footer {
+        display: none;
+      }
+      
+      .sidebar-brand {
+        justify-content: center;
+        padding: 15px;
+      }
+      
+      .sidebar ul li a {
+        justify-content: center;
+        padding: 12px;
+      }
+      
+      .menu-icon {
+        margin-right: 0;
+      }
+      
+      .main {
+        margin-left: 70px;
+        padding: 20px;
+      }
+      
+      .form-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-icon">U</div>
+      <div class="brand-text">U.L.A.M Gym</div>
+    </div>
+    <div class="sidebar-menu">
+      <div class="menu-header">Dashboard</div>
+      <ul>
+        <li>
+          <a href="dashboard.html">
+            <span class="menu-icon">📊</span>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="members.html">
+            <span class="menu-icon">👥</span>
+            <span class="menu-text">Add Members</span>
+          </a>
+        </li> 
+      </ul>
+      <div class="menu-header">Management</div>
+      <ul>
+        <li>
+          <a href="settings.html">
+            <span class="menu-icon">⚙️</span>
+            <span class="menu-text">Settings</span>
+          </a>
+        </li>
+        <li class="logout">
+          <a href="login.html">
+            <span class="menu-icon">🚪</span>
+            <span class="menu-text">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="sidebar-footer">
+      © 2025 U.L.A.M Fitness
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-header">
+      <div class="header-title">
+        <h1>Add New Member</h1>
+        <p>Enter member details to register them in the system</p>
+      </div>
+      <div class="header-actions">
+        <button onclick="window.location.href='members.html'">
+          <span class="btn-icon">👥</span> View All Members
+        </button>
+      </div>
+    </div>
+
+    <div class="form-container">
+      <!-- Left Column - Member Form -->
+      <div class="card">
+        <h2>Member Information</h2>
+        <form id="memberForm">
+          <div class="photo-upload">
+            <div class="photo-placeholder">
+              <span class="photo-icon">👤</span>
+              <img id="memberPhotoPreview" style="display: none;" alt="Member photo">
+            </div>
+            <label for="memberPhoto" class="upload-btn">Upload Photo</label>
+            <input type="file" id="memberPhoto" accept="image/*" style="display: none;">
+          </div>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" required>
+            </div>
+            <div class="input-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="input-group">
+              <label for="phone">Phone *</label>
+              <input type="tel" id="phone" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="dateOfBirth">Date of Birth</label>
+              <input type="date" id="dateOfBirth">
+            </div>
+            <div class="input-group">
+              <label for="gender">Gender</label>
+              <select id="gender">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="address">Address</label>
+            <textarea id="address" rows="3"></textarea>
+          </div>
+
+          <h3>Emergency Contact</h3>
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="emergencyName">Contact Name</label>
+              <input type="text" id="emergencyName">
+            </div>
+            <div class="input-group">
+              <label for="emergencyPhone">Contact Phone</label>
+              <input type="tel" id="emergencyPhone">
+            </div>
+          </div>
+
+          <h3>Health Information</h3>
+          <div class="input-group">
+            <label for="healthConditions">Medical Conditions or Allergies</label>
+            <textarea id="healthConditions" rows="3" placeholder="List any relevant health information..."></textarea>
+          </div>
+
+          <h3>Membership Details</h3>
+          <div class="membership-options">
+            <div class="membership-option" onclick="selectMembership(this, 'basic')">
+              <h4>Basic Membership</h4>
+              <p class="price">₱1,200</p>
+              <p class="duration">Per Month</p>
+              <ul style="font-size: 13px; margin-top: 10px; color: #666; padding-left: 15px;">
+                <li>Gym access (6am - 10pm)</li>
+                <li>Basic equipment usage</li>
+                <li>Locker access</li>
+              </ul>
+            </div>
+            <div class="membership-option" onclick="selectMembership(this, 'premium')">
+              <h4>Premium Membership</h4>
+              <p class="price">₱2,500</p>
+              <p class="duration">Per Month</p>
+              <ul style="font-size: 13px; margin-top: 10px; color: #666; padding-left: 15px;">
+                <li>24/7 gym access</li>
+                <li>All equipment usage</li>
+                <li>2 free PT sessions/month</li>
+                <li>Basic meal plan</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="startDate">Start Date *</label>
+              <input type="date" id="startDate" required>
+            </div>
+            <div class="input-group">
+              <label for="paymentMethod">Payment Method *</label>
+              <select id="paymentMethod" required>
+                <option value="">Select payment method</option>
+                <option value="cash">Cash</option>
+                <option value="card">Credit/Debit Card</option>
+                <option value="bank">Bank Transfer</option>
+                <option value="online">Online Payment</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" rows="3" placeholder="Any additional information..."></textarea>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn btn-cancel" onclick="window.location.href='members.html'">Cancel</button>
+            <button type="submit" class="btn btn-submit">Add Member</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Column - Preview & Tips -->
+      <div>
+        <div class="card member-preview">
+          <div class="preview-header">
+            <div class="preview-photo">
+              <span class="photo-icon">👤</span>
+              <img id="previewPhotoDisplay" style="display: none;" alt="Member preview photo">
+            </div>
+            <div class="preview-name" id="previewName">New Member</div>
+            <div class="preview-membership" id="previewMembership">Basic Membership</div>
+          </div>
+          <div class="preview-body">
+            <div class="preview-detail">
+              <div class="preview-label">Email</div>
+              <div class="preview-value" id="previewEmail">-</div>
+            </div>
+            <div class="preview-detail">
+              <div class="preview-label">Phone</div>
+              <div class="preview-value" id="previewPhone">-</div>
+            </div>
+            <div class="preview-detail">
+              <div class="preview-label">Membership Start</div>
+              <div class="preview-value" id="previewStartDate">-</div>
+            </div>
+            <div class="preview-detail">
+              <div class="preview-label">Payment Method</div>
+              <div class="preview-value" id="previewPayment">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Quick Tips</h2>
+          <div class="quick-tips">
+            <h3>Member Registration Tips</h3>
+            <ul>
+              <li>Verify the member's ID for accurate information</li>
+              <li>Explain the membership benefits and gym rules</li>
+              <li>Ask about fitness goals to suggest appropriate programs</li>
+              <li>Collect accurate emergency contact information</li>
+              <li>Verify payment details before finalizing registration</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Live preview functionality
+    document.getElementById('firstName').addEventListener('input', updatePreview);
+    document.getElementById('lastName').addEventListener('input', updatePreview);
+    document.getElementById('email').addEventListener('input', updatePreview);
+    document.getElementById('phone').addEventListener('input', updatePreview);
+    document.getElementById('startDate').addEventListener('input', updatePreview);
+    document.getElementById('paymentMethod').addEventListener('change', updatePreview);
+    
+    // Photo upload preview
+    document.getElementById('memberPhoto').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById('memberPhotoPreview').src = event.target.result;
+          document.getElementById('memberPhotoPreview').style.display = 'block';
+          document.getElementById('previewPhotoDisplay').src = event.target.result;
+          document.getElementById('previewPhotoDisplay').style.display = 'block';
+          document.querySelector('.photo-placeholder .photo-icon').style.display = 'none';
+          document.querySelector('.preview-photo .photo-icon').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    document.querySelector('.upload-btn').addEventListener('click', function() {
+      document.getElementById('memberPhoto').click();
+    });
+    
+    // Form submission
+    document.getElementById('memberForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Member added successfully!');
+      window.location.href = 'members.html';
+    });
+    
+    // Membership selection
+    function selectMembership(element, type) {
+      // Remove selected class from all options
+      document.querySelectorAll('.membership-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      element.classList.add('selected');
+      
+      // Update preview
+      document.getElementById('previewMembership').textContent = 
+        type === 'basic' ? 'Basic Membership' : 'Premium Membership';
+    }
+    
+    // Update preview card with form data
+    function updatePreview() {
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const fullName = firstName && lastName ? `${firstName} ${lastName}` : 'New Member';
+      document.getElementById('previewName').textContent = fullName;
+      
+      const email = document.getElementById('email').value;
+      document.getElementById('previewEmail').textContent = email || '-';
+      
+      const phone = document.getElementById('phone').value;
+      document.getElementById('previewPhone').textContent = phone || '-';
+      
+      const startDate = document.getElementById('startDate').value;
+      document.getElementById('previewStartDate').textContent = startDate ? formatDate(startDate) : '-';
+      
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      let paymentDisplay = '-';
+      if (paymentMethod === 'cash') paymentDisplay = 'Cash';
+      if (paymentMethod === 'card') paymentDisplay = 'Credit/Debit Card';
+      if (paymentMethod === 'bank') paymentDisplay = 'Bank Transfer';
+      if (paymentMethod === 'online') paymentDisplay = 'Online Payment';
+      document.getElementById('previewPayment').textContent = paymentDisplay;
+    }
+    
+    // Format date for display
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+  </script>
+</body>
+</html>
